@@ -1,5 +1,5 @@
-package com.mybank.tui;
-
+import java.util.ArrayList;
+import com.mybank.domain.*;
 import jexer.TAction;
 import jexer.TApplication;
 import jexer.TField;
@@ -60,6 +60,11 @@ public class TUIdemo extends TApplication {
     }
 
     private void ShowCustomerDetails() {
+        ArrayList<Customer> List = new ArrayList();
+        List.add(new Customer("Ann", "Smith"));
+        List.add(new Customer("Mark", "Dominik"));
+        List.get(0).addAccount(new SavingsAccount(200, 0.2));
+        List.get(1).addAccount(new CheckingAccount(150, 600));
         TWindow custWin = addWindow("Customer Window", 2, 1, 40, 10, TWindow.NOZOOMBOX);
         custWin.newStatusBar("Enter valid customer number and press Show...");
 
@@ -71,8 +76,15 @@ public class TUIdemo extends TApplication {
             public void DO() {
                 try {
                     int custNum = Integer.parseInt(custNo.getText());
+                    String Type="";
+                    if(List.get(custNum-1).getAccount(0).getClass().getSimpleName().equals("SavingsAccount")==true){
+                    Type="Savings";}
+                    else{
+                        Type="Checking";
+                    }
+         
                     //details about customer with index==custNum
-                    details.setText("Owner Name: John Doe (id="+custNum+")\nAccount Type: 'Checking'\nAccount Balance: $200.00");
+                    details.setText("Owner Name: "+List.get(custNum-1).getFirstName()+" "+List.get(custNum-1).getLastName()+"(id="+custNum+")\nAccount Type: '"+Type+"'\nAccount Balance: $"+List.get(custNum-1).getAccount(0).getBalance()+"");
                 } catch (Exception e) {
                     messageBox("Error", "You must provide a valid customer number!").show();
                 }
